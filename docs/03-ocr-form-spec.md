@@ -6,28 +6,35 @@
 
 ## Feldmapping: Formular → Datenbank
 
-| Formularfeld (Beschriftung) | Datenbankfeld   | Format          | Notizen                       |
-|-----------------------------|-----------------|-----------------|-------------------------------|
-| Vorname                     | firstName       | Text            |                               |
-| Nachname / Name             | lastName        | Text            |                               |
-| Straße / Anschrift          | street          | Text            | [TBD]                         |
-| PLZ                         | postalCode      | 5 Ziffern       |                               |
-| Ort                         | city            | Text            |                               |
-| Telefon                     | phone           | Text            |                               |
-| E-Mail                      | email           | E-Mail          |                               |
-| Geburtsdatum                | birthDate       | Datum           | [TBD]                         |
-| Eintrittsdatum              | joinDate        | Datum           |                               |
-| Aktiv / Passiv              | membershipType  | Checkbox/Radio  | → `ACTIVE` / `PASSIVE`        |
+| Formularfeld (PDF) | Datenbankfeld   | Format          | Notizen / Erkennungshinweise      |
+|--------------------|-----------------|-----------------|-----------------------------------|
+| Name               | lastName        | Text            | Familienname                      |
+| Geburtsname        | birthName       | Text            | Optional                          |
+| Vorname            | firstName       | Text            | Vorname                           |
+| Straße, Hausnummer | street          | Text            | z.B. "Obere Äcker 4"              |
+| PLZ                | postalCode      | 5 Ziffern       |                                   |
+| ORT                | city            | Text            |                                   |
+| Telefon            | phone           | Text            | Festnetz                          |
+| Mobil              | phoneMobile     | Text            | Mobilfunk (optional)              |
+| Email              | email           | E-Mail          |                                   |
+| Geburtsdatum       | birthDate       | Datum (TT.MM.JJJJ) | Z.B. "15.03.1985"            |
+| Unterschrift Datum | joinDate        | Datum           | Beitrittsdatum = Unterschriftsdatum |
+| Aktives/Passives Mitglied | membershipType | Radio/Checkbox | → `ACTIVE` oder `PASSIVE` |
+| Jahresbeitrag (€)  | annualFee       | Dezimal         | Eingabe: "______ €", Wert auslesen |
+| Kontoinhaber       | accountHolder   | Text            |                                   |
+| IBAN               | iban            | Text (IBAN)     | Format: DE + 22 Ziffern           |
+| Datenschutz-Zustimmung | photoConsent | Boolean         | Checkbox: angekreuzt = true       |
 
-## OCR-Hinweise
-- **Engine:** Tesseract.js, Sprache `deu`.
-- **Ablauf:** Foto → OCR → Felder als vorausgefüllter Formularvorschlag →
-  Nutzer kontrolliert/korrigiert → Speichern.
-- **Aktiv/Passiv-Erkennung:** Ankreuzfelder sind per OCR fehleranfällig.
-  Empfehlung: erkannten Wert vorschlagen, aber im Korrekturformular als
-  deutlich sichtbare Auswahl (Toggle) anzeigen.
-- **Qualitätsschwelle:** Werden < 50 % der Pflichtfelder erkannt → Hinweis
-  „Foto nicht lesbar, bitte erneut fotografieren".
+## OCR-Hinweise für KFR
+- **Formulartyp:** Festplatz-PDF mit konsistentem Layout (ideal für zonenbasiertes OCR)
+- **Aktiv/Passiv-Erkennung:** Ist das eine Checkbox-Option oder zwei separate Kontrollkästchen?
+  - Falls zwei Boxen nebeneinander: beide scannen, eine wird angekreuzt
+  - Falls Radio-Button-Stil: deutlich erkennbar
+- **Währungssymbol:** Jahresbeitrag steht nach einer Leerzeile `___________ €`
+  → Zahl erkennen, "€" ignorieren
+- **IBAN:** 22 Ziffern nach "IBAN:" auslesen → auf Format prüfen
+- **Datum-Format:** Unterschriftsdatum ist `TT.MM.JJJJ` (z.B. "13.06.2024")
+- **Qual.-Schwelle:** Wenn < 50% der Pflichtfelder erkannt, Neuaufnahme empfehlen
 
 ## Offene Fragen
 - Liegt das Formular als fester Vordruck vor (gleiches Layout immer)? Dann ist

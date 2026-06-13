@@ -5,21 +5,27 @@
 
 ## Mitglied (`member`)
 
-| Feldname        | Typ     | Pflicht | Validierung               | Quelle / Notizen                  |
+| Feldname        | Typ     | Pflicht | Validierung               | Formularquelle                    |
 |-----------------|---------|---------|---------------------------|-----------------------------------|
 | id              | UUID    | ✓       | auto-generiert            | Primärschlüssel                   |
-| firstName       | String  | ✓       | max 100 Zeichen           |                                   |
-| lastName        | String  | ✓       | max 100 Zeichen           |                                   |
-| email           | String  | ✗ [TBD] | gültiges E-Mail-Format    | ggf. nicht jeder hat eine         |
-| phone           | String  | ✗       | Format [TBD]              |                                   |
-| street          | String  | ✗       |                           | Adresse [TBD ob benötigt]         |
-| postalCode      | String  | ✗       | 5 Ziffern (DE)            |                                   |
-| city            | String  | ✗       |                           |                                   |
-| birthDate       | Date    | ✗ [TBD] |                           |                                   |
-| joinDate        | Date    | ✓       |                           | Beitrittsdatum                    |
-| membershipType  | Enum    | ✓       | `ACTIVE` \| `PASSIVE`     | manuell + per OCR; vom Formular   |
-| status          | Enum    | ✓       | `MEMBER` \| `RESIGNED`    | Standard: `MEMBER` [TBD]          |
-| notes           | Text    | ✗       |                           | Freitext                          |
+| firstName       | String  | ✓       | max 100 Zeichen           | Feld "Vorname"                    |
+| lastName        | String  | ✓       | max 100 Zeichen           | Feld "Name"                       |
+| birthName       | String  | ✗       | max 100 Zeichen           | Feld "Geburtsname" (optional)     |
+| email           | String  | ✓       | gültiges E-Mail-Format    | Feld "Email"                      |
+| phone           | String  | ✓       |                           | Feld "Telefon"                    |
+| phoneMobile     | String  | ✗       |                           | Feld "Mobil"                      |
+| street          | String  | ✓       |                           | Feld "Straße, Hausnummer"         |
+| postalCode      | String  | ✓       | 5 Ziffern (DE)            | Feld "PLZ"                        |
+| city            | String  | ✓       |                           | Feld "ORT"                        |
+| birthDate       | Date    | ✓       |                           | Feld "Geburtsdatum"               |
+| joinDate        | Date    | ✓       |                           | Unterschrift: Datum               |
+| membershipType  | Enum    | ✓       | `ACTIVE` \| `PASSIVE`     | Feld "Aktives/Passives Mitglied"  |
+| annualFee       | Decimal | ✓       | min. 12€ (6€ Minderjährige)| Feld "Jahresbeitrag"              |
+| accountHolder   | String  | ✓       |                           | Feld "Kontoinhaber"               |
+| iban            | String  | ✓       | IBAN-Format               | Feld "IBAN"                       |
+| photoConsent    | Boolean | ✓       | true/false                | Datenschutz-Zustimmung (Fotos)    |
+| status          | Enum    | ✓       | `MEMBER` \| `RESIGNED`    | Standard: `MEMBER`                |
+| notes           | Text    | ✗       |                           | Freitext für Notizen              |
 | createdAt       | Date    | ✓       | auto                      |                                   |
 | createdBy       | String  | ✓       | auto (eingeloggter User)  | für Änderungsprotokoll            |
 | updatedAt       | Date    | ✓       | auto                      |                                   |
@@ -43,5 +49,5 @@
 ```
 
 ## Offene Fragen
-- Welche Spalten enthält die bestehende Excel genau? → `original-members.xlsx`
-- Werden Adresse / Geburtsdatum / IBAN (für Beitragseinzug?) benötigt? [TBD]
+- Ist das Formular-PDF digital oder wird es unterschrieben und fotografiert?
+  (Beeinflußt OCR-Strategie: PDF-Parsing vs. Foto-OCR)

@@ -8,15 +8,8 @@
 - Auf dem Beitrittsformular enthalten → wird per OCR vorgeschlagen.
 - Werte: `ACTIVE` (Aktiv), `PASSIVE` (Passiv).
 
-## Excel-Import
-- Bestehende Mitglieder werden aus der vorhandenen Excel übernommen.
-- Gültige Zeilen importieren, fehlerhafte Zeilen als Korrekturliste ausgeben.
-
-## Mehrbenutzerbetrieb
-- Änderungen sind sofort für alle sichtbar (zentrale DB).
-- Optional: Änderungsprotokoll (wer/was/wann) – siehe Feature 09.
-
-## Noch offene Geschäftsregeln [TBD]
-- Beitragsverwaltung / Zahlungsstatus? (in dieser Version noch nicht im Umfang)
-- Mahnwesen?
-- Pflichtfelder final bestätigen.
+## Beitragsverwaltung
+- **Jahresbeitrag:** variabel (mindestens 12€/Jahr, Minderjährige 6€/Jahr)
+- **Zahlungsrhythmus:** Jährlich im März per Lastschrift
+- **Kontodetails:** IBAN + Kontoinhaber werden im Formular erfasst und gespeichert
+- **Künftige Features:** Zahlungsstatus-Tracking, Mahnwesen (nicht in MVP)
