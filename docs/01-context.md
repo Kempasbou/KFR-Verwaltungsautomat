@@ -1,7 +1,7 @@
 # 01 – Projektkontext
 
-> Dies ist das wichtigste Dokument. Es fasst zusammen, was für jede
-> Weiterentwicklung bekannt sein muss. Offene Punkte sind mit `[TBD]` markiert.
+> Reines OCR-Tool für Beitrittsformulare. Keine zentrale Datenbank.
+> Fokus: Datensicherheit – nur die per OCR erkannten Daten werden verarbeitet.
 
 ## Kerninfo
 - **Projektname:** KFR-Verwaltungsautomat
@@ -9,46 +9,53 @@
 - **Sitz:** Graswiesenstrasse 2, 90518 Altdorf
 - **Website:** https://kulturfreunde-rieden.de/
 - **Kontakt:** Tel +49 171 3572275, info@kulturfreunde-rieden.de
-- **Vereinszweck:** Heimat- und Brauchtumspflege, Erhalt lokaler Traditionen,
-  Organisation von Dorfplatz-Veranstaltungen (Osterbrunnen, Adventsmarkt, etc.)
-- **Anzahl Mitglieder:** [TBD]
-- **Primäres Problem:** Papier-Beitrittsanträge werden ineffizient manuell in
-  Excel übertragen. Mehrere Vorstandsmitglieder arbeiten an einem Datenbestand.
-- **Hauptfeature:** Foto eines Beitrittsformulars → OCR → automatische
-  Datenextraktion → nach Kontrolle direkt in die Datenbank.
+- **Vereinszweck:** Heimat- und Brauchtumspflege, Erhalt lokaler Traditionen
+
+## Kernidee: Datensicherheit-First OCR
+
+**Nicht:** Zentrale Datenbank mit Authentifizierung & Mehrbenutzersync.  
+**Sondern:** Einfaches Web-Tool mit diesem Workflow:
+
+1. Papier-Beitrittsformular fotografieren
+2. Foto uploaden → Tesseract.js (OCR) extrahiert Felder
+3. Nutzer prüft/korrigiert die erkannten Daten
+4. **Klick "In Zwischenablage"** → Tab-getrennte Excel-Zeile (TSV)
+5. Nutzer öffnet seine lokale Excel-Datei
+6. Pastet neue Zeile ein (Ctrl+V) → speichert lokal
+
+**Sicherheit:**
+- ✅ Keine Datenbank in der Cloud
+- ✅ Keine Daten bleiben auf dem Server
+- ✅ Nur der Nutzer hat Zugriff
+- ✅ Kein Login nötig
+- ✅ Stateless: Foto wird verarbeitet und wieder vergessen
 
 ## Kritische Anforderungen
-1. **Mehrbenutzer:** Mehrere Vorstandsmitglieder arbeiten gemeinsam an einem
-   aktuellen Datenbestand.
-2. **OCR-Erfassung:** Automatische Erkennung der Formulardaten (auch wenn nicht
-   100 % perfekt), mit anschließender händischer Korrekturmöglichkeit.
-3. **Mitgliedschaftstyp:** Unterscheidung **Aktiv** vs. **Passiv** – manuell
-   wählbar und auf dem Beitrittsformular enthalten (wird per OCR erkannt).
-4. **Plattform:** Web-App im Browser, auch am Handy nutzbar (responsive).
-5. **Zugriffsschutz:** Nur berechtigte Vorstandsmitglieder dürfen die App nutzen.
+1. **OCR-Qualität:** Automatische Feldextraktion (auch wenn nicht 100% perfekt)
+2. **Verifikation:** Nutzer sieht ALLE erkannten Felder und kann korrigieren
+3. **Zwischenablage:** TSV-Format für direktes Excel-Einfügen
+4. **Responsive:** Funktioniert auf Handy + Desktop
+5. **Einfach:** Kein Login, keine Berechtigungen, ein klarer Workflow
+
+## Tech-Stack
+- **Frontend:** React (responsive, mobile-friendly)
+- **OCR-Engine:** Tesseract.js (im Browser, keine Backend-API)
+- **Clipboard:** Browser Clipboard API (kopiert TSV-Zeile)
+- **Hosting:** Statische Web-App (z.B. Vercel, GitHub Pages)
+- **Tests:** Unit-Tests für OCR-Logik, E2E für kritische Workflows
 
 ## Bestehende Daten
-- Mitglieder liegen aktuell in einer **Excel-Datei** vor.
-- → Soll importierbar sein (siehe `features/04-excel-import.feature`).
-- Excel-Export ablegen unter: `sample-data/original-members.xlsx` [TBD]
-
-## Test-Strategie
-- Testpyramide: ~70% Unit, ~25% Integration, ~5% E2E
-- Unit-Tests: OCR, Validierung, Geschäftslogik, Hilfsfunktionen
-- Integration: DB + OCR, Auth + Permissions, Mehrbenutzerszenarios
-- E2E: Nur kritische Workflows (Foto→DB, Excel-Import)
-- Framework: [TBD – Vitest? Jest?]
-
+- Mitgliederliste wird **lokal in Excel** gepflegt (nicht in der App)
+- Excel-Struktur ist vorgegeben (siehe `02-data-model.md`)
+- Aktueller Beitrittsformular-PDF: `sample-data/Beitrittserklaerung-...pdf`
 
 ## Nächste Schritte
-1. Offene `[TBD]`-Punkte klären (Vereinstyp, Mitgliederzahl, Datenfelder).
-2. Excel-Datei + Foto des Beitrittsformulars in `sample-data/` ablegen.
-3. Datenmodell (`02-data-model.md`) und OCR-Mapping (`03-ocr-form-spec.md`)
-   anhand der echten Daten finalisieren.
-4. Dann erst: Prototyp bauen.
+1. ✅ Datenmodell & OCR-Spec finalisiert
+2. UI-Prototyp bauen (React-Komponenten)
+3. Tests schreiben (Unit + E2E)
+4. In Produktion gehen
 
 ## Weiterführende Dokumente
-- `02-data-model.md` – Datenfelder & Validierung
-- `03-ocr-form-spec.md` – Formular → Datenbank-Mapping
-- `04-user-roles.md` – Rollen & Berechtigungen
-- `05-business-logic.md` – Geschäftsregeln & Besonderheiten
+- `02-data-model.md` – Excel-Spaltenstruktur & TSV-Output-Format
+- `03-ocr-form-spec.md` – Formular-Feldmapping
+- `05-business-logic.md` – Geschäftsregeln (z.B. Beitrag, Aktiv/Passiv)

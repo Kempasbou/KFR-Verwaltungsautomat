@@ -1,53 +1,89 @@
-# 02 – Datenmodell
+# 02 – Datenmodell: Excel-Struktur & TSV-Output
 
-> Die Felder sind ein erster Entwurf und werden anhand der echten Excel-Datei
-> und des Beitrittsformulars finalisiert. `[TBD]` = noch zu klären.
+> Da die App eine reine OCR-Hilfe ist, definiert dieses Dokument:
+> 1. Die Excel-Spalten (= Ziel-Format)
+> 2. Das TSV-Output-Format (was in die Zwischenablage kopiert wird)
 
-## Mitglied (`member`)
+## Excel-Spaltenstruktur (lokale Mitgliederliste)
 
-| Feldname        | Typ     | Pflicht | Validierung               | Formularquelle                    |
-|-----------------|---------|---------|---------------------------|-----------------------------------|
-| id              | UUID    | ✓       | auto-generiert            | Primärschlüssel                   |
-| firstName       | String  | ✓       | max 100 Zeichen           | Feld "Vorname"                    |
-| lastName        | String  | ✓       | max 100 Zeichen           | Feld "Name"                       |
-| birthName       | String  | ✗       | max 100 Zeichen           | Feld "Geburtsname" (optional)     |
-| email           | String  | ✓       | gültiges E-Mail-Format    | Feld "Email"                      |
-| phone           | String  | ✓       |                           | Feld "Telefon"                    |
-| phoneMobile     | String  | ✗       |                           | Feld "Mobil"                      |
-| street          | String  | ✓       |                           | Feld "Straße, Hausnummer"         |
-| postalCode      | String  | ✓       | 5 Ziffern (DE)            | Feld "PLZ"                        |
-| city            | String  | ✓       |                           | Feld "ORT"                        |
-| birthDate       | Date    | ✓       |                           | Feld "Geburtsdatum"               |
-| joinDate        | Date    | ✓       |                           | Unterschrift: Datum               |
-| membershipType  | Enum    | ✓       | `ACTIVE` \| `PASSIVE`     | Feld "Aktives/Passives Mitglied"  |
-| annualFee       | Decimal | ✓       | min. 12€ (6€ Minderjährige)| Feld "Jahresbeitrag"              |
-| accountHolder   | String  | ✓       |                           | Feld "Kontoinhaber"               |
-| iban            | String  | ✓       | IBAN-Format               | Feld "IBAN"                       |
-| photoConsent    | Boolean | ✓       | true/false                | Datenschutz-Zustimmung (Fotos)    |
-| status          | Enum    | ✓       | `MEMBER` \| `RESIGNED`    | Standard: `MEMBER`                |
-| notes           | Text    | ✗       |                           | Freitext für Notizen              |
-| createdAt       | Date    | ✓       | auto                      |                                   |
-| createdBy       | String  | ✓       | auto (eingeloggter User)  | für Änderungsprotokoll            |
-| updatedAt       | Date    | ✓       | auto                      |                                   |
+Die Mitgliederliste wird vom Nutzer lokal in Excel gepflegt. Diese Spalten sind verbindlich:
 
-> ⚠️ **Wichtig:** `membershipType` (Aktiv/Passiv) ist eine eigene Dimension und
-> NICHT mit `status` (Mitglied/ausgetreten) zu verwechseln.
+| Spaltennummer | Spaltenname     | Datentyp | Beispiel                          | Notizen                        |
+|---|---|---|---|---|
+| A | Vorname         | Text     | Max                               | aus OCR: firstName          |
+| B | Nachname        | Text     | Mustermann                        | aus OCR: lastName           |
+| C | Geburtsname     | Text     | (leer) / Schmidt                  | aus OCR: birthName (optional)|
+| D | Straße          | Text     | Obere Äcker 4                     | aus OCR: street             |
+| E | PLZ             | Text     | 90518                             | aus OCR: postalCode         |
+| F | Ort             | Text     | Altdorf                           | aus OCR: city               |
+| G | Telefon         | Text     | 09187 123456                      | aus OCR: phone              |
+| H | Mobil           | Text     | 0151 23456789                     | aus OCR: phoneMobile        |
+| I | Email           | Text     | max@example.de                    | aus OCR: email              |
+| J | Geburtsdatum    | Datum    | 15.03.1985                        | aus OCR: birthDate          |
+| K | Eintrittsdatum  | Datum    | 01.03.2024                        | aus OCR: joinDate           |
+| L | Mitgliedschaft   | Text     | Aktiv / Passiv                    | aus OCR: membershipType     |
+| M | Jahresbeitrag   | Dezimal  | 24,00                             | aus OCR: annualFee (€)      |
+| N | Kontoinhaber    | Text     | Max Mustermann                    | aus OCR: accountHolder      |
+| O | IBAN            | Text     | DE89370400440532013000            | aus OCR: iban               |
+| P | Foto-Einverständnis | Text | Ja / Nein                         | aus OCR: photoConsent       |
 
-## Beispiel (JSON)
-```json
-{
-  "id": "uuid-v4",
-  "firstName": "Max",
-  "lastName": "Mustermann",
-  "email": "max@example.de",
-  "phone": "0151 23456789",
-  "joinDate": "2024-03-01",
-  "membershipType": "ACTIVE",
-  "status": "MEMBER",
-  "createdBy": "vorstand@verein.de"
-}
+## TSV-Output-Format (In Zwischenablage kopieren)
+
+Wenn der Nutzer "In Zwischenablage" klickt, wird eine **Tab-getrennte Zeile** kopiert:
+
+```
+Max	Mustermann		Obere Äcker 4	90518	Altdorf	09187 123456	0151 23456789	max@example.de	15.03.1985	01.03.2024	Aktiv	24,00	Max Mustermann	DE89370400440532013000	Ja
+```
+
+**Format-Details:**
+- **Trennzeichen:** Tabulator (`\t`)
+- **Dezimaltrennzeichen:** Komma `,` (für Deutsche Excel)
+- **Datumsformat:** `TT.MM.JJJJ` (z.B. `15.03.1985`)
+- **Leere Felder:** Bleiben leer, aber Tab wird gesetzt (damit Spalten-Ausrichtung stimmt)
+- **Ja/Nein:** Für Foto-Einverständnis statt true/false
+
+## Datentypen & Validierung (für OCR)
+
+| Feldname       | Typ     | Format-Regel                          | Beispiel              |
+|---|---|---|---|
+| firstName      | Text    | max 100 Zeichen                       | Max                   |
+| lastName       | Text    | max 100 Zeichen                       | Mustermann            |
+| birthName      | Text    | max 100 Zeichen, optional             | Schmidt               |
+| street         | Text    | Straße + Hausnummer                   | Obere Äcker 4         |
+| postalCode     | Text    | genau 5 Ziffern (DE)                  | 90518                 |
+| city           | Text    | max 100 Zeichen                       | Altdorf               |
+| phone          | Text    | Telefonnummer (Formattierung flexibel)| 09187 123456          |
+| phoneMobile    | Text    | Telefonnummer (Formattierung flexibel)| 0151 23456789         |
+| email          | Email   | gültiges E-Mail-Format                | max@example.de        |
+| birthDate      | Datum   | `TT.MM.JJJJ`                         | 15.03.1985            |
+| joinDate       | Datum   | `TT.MM.JJJJ` (Unterschriftsdatum)     | 01.03.2024            |
+| membershipType | Text    | genau "Aktiv" oder "Passiv"           | Aktiv                 |
+| annualFee      | Dezimal | min. 12,00 (6,00 für Minderjährige)   | 24,00                 |
+| accountHolder  | Text    | max 200 Zeichen                       | Max Mustermann        |
+| iban           | Text    | IBAN-Format (DE + 22 Ziffern)         | DE89370400440532013000|
+| photoConsent   | Text    | "Ja" oder "Nein"                      | Ja                    |
+
+## Beispiel: Kopierte Zeile in Excel einfügen
+
+**Vorher (Excel):**
+```
+Vorname | Nachname | Geburtsname | Straße | ...
+Alice  | Maier    |             | ...    | ...
+```
+
+**Nutzer:** Klick "In Zwischenablage" in der App  
+**Zwischenablage enthält:**
+```
+Max	Mustermann		Obere Äcker 4	90518	Altdorf	...
+```
+
+**Nachher (Excel):**
+```
+Vorname | Nachname | Geburtsname | Straße | ...
+Alice  | Maier    |             | ...    | ...
+Max    | Mustermann |           | Obere Äcker 4 | ...
 ```
 
 ## Offene Fragen
-- Ist das Formular-PDF digital oder wird es unterschrieben und fotografiert?
-  (Beeinflußt OCR-Strategie: PDF-Parsing vs. Foto-OCR)
+- Sollen Zahlen mit Komma oder Punkt als Trennzeichen sein? (aktuell: Komma für DE)
+- Gibt es weitere Excel-Spalten, die der Nutzer noch benötigt? (z.B. Status, Notizen)
