@@ -27,6 +27,14 @@
 - → Soll importierbar sein (siehe `features/04-excel-import.feature`).
 - Excel-Export ablegen unter: `sample-data/original-members.xlsx` [TBD]
 
+## Test-Strategie
+- Testpyramide: ~70% Unit, ~25% Integration, ~5% E2E
+- Unit-Tests: OCR, Validierung, Geschäftslogik, Hilfsfunktionen
+- Integration: DB + OCR, Auth + Permissions, Mehrbenutzerszenarios
+- E2E: Nur kritische Workflows (Foto→DB, Excel-Import)
+- Framework: [TBD – Vitest? Jest?]
+
+
 ## Nächste Schritte
 1. Offene `[TBD]`-Punkte klären (Vereinstyp, Mitgliederzahl, Datenfelder).
 2. Excel-Datei + Foto des Beitrittsformulars in `sample-data/` ablegen.
