@@ -16,6 +16,7 @@ export default function App() {
   const [fillRatio, setFillRatio] = useState(null);
   const [copied, setCopied] = useState(false);
   const fileRef = useRef(null);
+  const cameraRef = useRef(null);
 
   const { status, progress, error, recognize, reset } = useOcr();
 
@@ -67,6 +68,7 @@ export default function App() {
     setStep(0);
     reset();
     if (fileRef.current) fileRef.current.value = '';
+    if (cameraRef.current) cameraRef.current.value = '';
   }
 
   const lowQuality = fillRatio !== null && fillRatio < OCR_THRESHOLD;
@@ -95,23 +97,34 @@ export default function App() {
       {/* Schritt 0: Foto */}
       {step === 0 && (
         <section className="panel">
-          <div
-            className="dropzone"
-            role="button"
-            tabIndex={0}
-            onClick={() => fileRef.current?.click()}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && fileRef.current?.click()}
-          >
-            <div className="big">Formular fotografieren oder Bild wählen</div>
-            <div className="hint">
-              Tippe hier, um die Kamera zu öffnen oder ein Foto auszuwählen.
-            </div>
+          <div className="actions" style={{ justifyContent: 'center', gap: '14px' }}>
+            <button
+              className="btn btn-primary"
+              onClick={() => cameraRef.current?.click()}
+              style={{ flex: '1', maxWidth: '280px' }}
+            >
+              📷 Kamera öffnen
+            </button>
+            <button
+              className="btn btn-ghost"
+              onClick={() => fileRef.current?.click()}
+              style={{ flex: '1', maxWidth: '280px' }}
+            >
+              📁 Datei vom Gerät
+            </button>
           </div>
+          <input
+            ref={cameraRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={onInputChange}
+            style={{ display: 'none' }}
+          />
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
-            capture="environment"
             onChange={onInputChange}
             style={{ display: 'none' }}
           />
