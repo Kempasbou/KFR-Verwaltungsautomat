@@ -1,0 +1,20 @@
+[
+  {
+    "firstName": "Max",
+    "lastName": "Mustermann",
+    "email": "max@example.de",
+    "phone": "0151 23456789",
+    "joinDate": "2024-03-01",
+    "membershipType": "ACTIVE",
+    "status": "MEMBER"
+  },
+  {
+    "firstName": "Erika",
+    "lastName": "Beispiel",
+    "email": "erika@example.de",
+    "phone": "0160 11223344",
+    "joinDate": "2023-09-15",
+    "membershipType": "PASSIVE",
+    "status": "MEMBER"
+  }
+]
