@@ -5,10 +5,15 @@
 
 ## Kerninfo
 - **Projektname:** KFR-Verwaltungsautomat
-- **Vereinstyp:** [TBD – vermutlich im Feuerwehr-/KFR-Umfeld]
+- **Vereinsname:** Kulturfreunde Rieden e.V.
+- **Sitz:** Graswiesenstrasse 2, 90518 Altdorf
+- **Website:** https://kulturfreunde-rieden.de/
+- **Kontakt:** Tel +49 171 3572275, info@kulturfreunde-rieden.de
+- **Vereinszweck:** Heimat- und Brauchtumspflege, Erhalt lokaler Traditionen,
+  Organisation von Dorfplatz-Veranstaltungen (Osterbrunnen, Adventsmarkt, etc.)
 - **Anzahl Mitglieder:** [TBD]
 - **Primäres Problem:** Papier-Beitrittsanträge werden ineffizient manuell in
-  Excel übertragen.
+  Excel übertragen. Mehrere Vorstandsmitglieder arbeiten an einem Datenbestand.
 - **Hauptfeature:** Foto eines Beitrittsformulars → OCR → automatische
   Datenextraktion → nach Kontrolle direkt in die Datenbank.
 
